@@ -42,6 +42,38 @@ db.connect((err) => {
   }
 });
 
-db.query(`SELECT * FROM candidates`, (err, rows) => {
-  console.log(rows);
+// // selects and shows the entire DataBase
+// db.query(`SELECT * FROM candidates`, (err, rows) => {
+//   if (err) {
+//     console.log(err, "id number not found");
+//   }
+//   console.log(rows);
+// });
+
+// // selects and shows the row with id 1
+// db.query(`SELECT * FROM candidates WHERE ID = 1`, (err, rows) => {
+//   if (err) {
+//     console.log(err, "id number not found");
+//   }
+//   console.log(rows);
+// });
+
+// // deletes candidate
+// db.query(`DELETE FROM candidates WHERE id = ?`, 1, (err, results) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log(results);
+// });
+
+// creates a candidate
+const sql = 'INSERT INTO candidates (id, first_name, last_name, industry_connected) VALUES (?,?,?,?)';
+
+const params = [1, 'Ronald', 'Firbank', 1];
+
+db.query(sql, params, (err, results) => {
+  if (err) {
+    console.log(err);
+  }
+  console.log(results);
 });
