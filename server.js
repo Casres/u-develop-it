@@ -1,4 +1,6 @@
+// express is for servers
 const express = require("express");
+// MySQL is for data bases 
 const mysql = require("mysql2");
 
 const PORT = process.env.PORT || 3001;
@@ -26,7 +28,7 @@ app.get("/", (req, res) => {
 // connection to mysql DataBase to express server
 const db = mysql.createConnection(
   {
-    host: 'localhost',
+    host: '127.0.0.1',
     user: 'root',
     password: "",
     database: 'election',
@@ -38,4 +40,8 @@ db.connect((err) => {
   if (err) {
     throw err;
   }
+});
+
+db.query(`SELECT * FROM candidates`, (err, rows) => {
+  console.log(rows);
 });
