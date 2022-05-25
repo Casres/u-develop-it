@@ -1,6 +1,6 @@
 // express is for servers
 const express = require("express");
-// MySQL is for data bases 
+// MySQL is for data bases
 const mysql = require("mysql2");
 
 const PORT = process.env.PORT || 3001;
@@ -28,10 +28,10 @@ app.get("/", (req, res) => {
 // connection to mysql DataBase to express server
 const db = mysql.createConnection(
   {
-    host: '127.0.0.1',
-    user: 'root',
+    host: "localhost",
+    user: "root",
     password: "",
-    database: 'election',
+    database: "election",
   },
   console.log("CONNECTED to 'election' DataBase")
 );
@@ -42,13 +42,17 @@ db.connect((err) => {
   }
 });
 
-// // selects and shows the entire DataBase
-// db.query(`SELECT * FROM candidates`, (err, rows) => {
-//   if (err) {
-//     console.log(err, "id number not found");
-//   }
-//   console.log(rows);
-// });
+// selects and shows the entire DataBase
+app.get("/api/candidates", (req, res) => {
+  const sql = `SELECT * FROM candidates`;
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ data: rows, message: "SUCCESS" });
+  });
+});
 
 // // selects and shows the row with id 1
 // db.query(`SELECT * FROM candidates WHERE ID = 1`, (err, rows) => {
@@ -66,14 +70,14 @@ db.connect((err) => {
 //   console.log(results);
 // });
 
-// creates a candidate
-const sql = 'INSERT INTO candidates (id, first_name, last_name, industry_connected) VALUES (?,?,?,?)';
+// // creates a candidate
+// const sql = 'INSERT INTO candidates (id, first_name, last_name, industry_connected) VALUES (?,?,?,?)';
 
-const params = [1, 'Ronald', 'Firbank', 1];
+// const params = [1, 'Ronald', 'Firbank', 1];
 
-db.query(sql, params, (err, results) => {
-  if (err) {
-    console.log(err);
-  }
-  console.log(results);
-});
+// db.query(sql, params, (err, results) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log(results);
+// });
