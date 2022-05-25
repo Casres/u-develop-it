@@ -27,8 +27,9 @@ app.get("/", (req, res) => {
 
 // connection to mysql DataBase to express server
 const db = mysql.createConnection(
-  {
-    host: "localhost",
+  // 127.0.0.1
+  { 
+    host: "127.0.0.1",
     user: "root",
     password: "",
     database: "election",
