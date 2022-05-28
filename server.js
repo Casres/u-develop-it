@@ -137,11 +137,16 @@ app.get('/api/party/:id', (req, res) => {
     if (err) {
       res.status(500).json({error: err.message});
       return;
+    } 
+    if (rows === []) {
+      res.status(404).json({error: err.message});
+      return;
     }
     res.json({data: rows, message: "success"});
   });
 });
 
+// if the endpoint doesn't exist, like localhost:3001/blahblahblah, then it'll show this
 app.get("*", (req, res) => {
   res.status(404).send("endpoint not found");
 });
