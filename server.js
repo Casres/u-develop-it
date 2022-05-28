@@ -115,6 +115,33 @@ app.post('/api/candidates', ({body}, res) => {
   });
 });
 
+// returns all the parties 
+app.get('/api/parties', (req, res) => {
+  const sql = `SELECT * FROM parties;`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({error: err.message});
+      return;
+    }
+    res.json({data: rows, message: "success"});
+  })
+});
+
+// gets the the party by id
+app.get('/api/party/:id', (req, res) => {
+  const sql = `SELECT * FROM parties WHERE id = ?;`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, rows) =>{
+    if (err) {
+      res.status(500).json({error: err.message});
+      return;
+    }
+    res.json({data: rows, message: "success"});
+  });
+});
+
 // this starts the express server
 app.listen(PORT, () => {
   console.log(`Server ONLINE listening to ${PORT}`);
