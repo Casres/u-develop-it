@@ -142,6 +142,10 @@ app.get('/api/party/:id', (req, res) => {
   });
 });
 
+app.get("*", (req, res) => {
+  res.status(404).send("endpoint not found");
+});
+
 // this starts the express server
 app.listen(PORT, () => {
   console.log(`Server ONLINE listening to ${PORT}`);
