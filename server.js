@@ -23,7 +23,7 @@ const db = mysql.createConnection(
   { 
     host: "localhost",
     user: "root",
-    password: "MidKnightSun",
+    password: "Pancake",
     database: "election",
   },
   console.log("CONNECTED to 'election' DataBase")
@@ -33,10 +33,15 @@ const db = mysql.createConnection(
 db.connect((err) => {
   if (err) {
     throw err;
-  }``
+  }
 });
 
-// selects and shows the entire DataBase
+// if the api input doesn't exist or is found, like localhost:3001/blah-blah-blah, then it'll show this
+app.get("*", (req, res) => {
+  res.status(404).send("api not found");
+});
+
+// selects and shows the entire candidates
 app.get("/api/candidates", (req, res) => {
   const sql = `SELECT candidates.*, parties.names
               AS party_name
@@ -115,6 +120,33 @@ app.post('/api/candidates', ({body}, res) => {
   });
 });
 
+// updates candidate
+app.put("/api/candidates/:id", (req, res) => {
+  const errors = inputCheck(req.body, 'party_id');
+
+  if (errors) {
+    res.status(400).json({error: errors});
+    return;
+  }
+
+  const sql = "UPDATE candidates SET party_id = ? WHERE id = ?";
+  const params = [req.body.party_id, req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+    } else if (!result.affectedRows) {
+      res.json({ message: "Candidate not found" });
+    } else {
+      res.json({
+        data: req.body,
+        changes: result.affectedRows,
+        message: "success!",
+      });
+    }
+  });
+});
+
 // returns all the parties 
 app.get('/api/parties', (req, res) => {
   const sql = `SELECT * FROM parties;`;
@@ -129,7 +161,7 @@ app.get('/api/parties', (req, res) => {
 });
 
 // gets the the party by id
-app.get('/api/party/:id', (req, res) => {
+app.get('/api/parties/:id', (req, res) => {
   const sql = `SELECT * FROM parties WHERE id = ?;`;
   const params = [req.params.id];
 
@@ -137,18 +169,31 @@ app.get('/api/party/:id', (req, res) => {
     if (err) {
       res.status(500).json({error: err.message});
       return;
-    } 
-    if (rows === []) {
-      res.status(404).json({error: err.message});
+    } else if (rows.length < 1) {
+      res.status(404).json({message: "id not found"});
       return;
     }
     res.json({data: rows, message: "success"});
   });
 });
 
-// if the endpoint doesn't exist, like localhost:3001/blahblahblah, then it'll show this
-app.get("*", (req, res) => {
-  res.status(404).send("endpoint not found");
+app.delete(`/api/parties/:id`, (req, res) => {
+  const sql = `DELETE FROM parties WHERE id = ?`
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({error: res.message});
+    } else if(!result.affectedRows) {
+      res.json({messages: "party not found"});
+    } else {
+      res.json({
+        message: 'deleted',
+        changes: result.affectedRows,
+        id: req.params.id
+      })
+    }
+  });
 });
 
 // this starts the express server
