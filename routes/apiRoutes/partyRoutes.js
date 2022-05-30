@@ -57,9 +57,4 @@ router.delete(`/parties/:id`, (req, res) => {
   });
 });
 
-// if the api input doesn't exist or is found, like localhost:3001/blah-blah-blah, then it'll show this
-router.get("*", (req, res) => {
-  res.status(404).send(` 404 error code, api not found`);
-});
-
 module.exports = router;

@@ -17,14 +17,15 @@ app.use(express.json());
 // front of all the routes
 app.use('/api', apiRoutes);
 
-// Default response for any other request that are not found
-app.use((req, res) => {
-  res.status(404).end();
-});
-
 // when the user connects to the server, they will see this message ON the localhost
 app.get("/", (req, res) => {
   res.json({ message: "Monkey Time!" });
+});
+
+// Default response for any other request that are not found
+// ALWAYS keep THIS below all of your routes so that it catches all of them first 
+app.use((req, res) => {
+  res.status(404).end();
 });
 
 db.connect((err) => {
